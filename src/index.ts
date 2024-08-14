@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 
 import { router } from './routes/posts';
+import { router as user } from './routes/user';
 import { db } from './config/db';
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/posts', router);
+app.use('/api/users', user);
 
 db.then(() => {
     app.listen(port, () => {
