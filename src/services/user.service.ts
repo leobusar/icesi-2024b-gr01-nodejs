@@ -4,6 +4,9 @@ class UserService {
 
     public async create(userInput: UserInput): Promise<UserDocument> {
         try {
+            const userExists: UserDocument | null = await this.findByEmail(userInput.email);
+            if(userExists)
+                 throw  new ReferenceError("User already exists");
             const  user = await  UserModel.create(userInput);
             return user;            
         } catch (error) {

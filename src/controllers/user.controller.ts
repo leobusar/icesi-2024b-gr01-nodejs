@@ -6,10 +6,15 @@ class userController {
 
     public async create(req: Request, res: Response) {
         try {
-            const user: UserDocument = await userService.create(req.body as UserInput); 
-            return res.status(201).json(user);            
+            // const userExists: UserDocument | null = await userService.findByEmail(req.body.email);
+            // if(userExists)
+            //      res.status(400).json({message: "User already exists" });
+            const user: UserDocument = await userService.create(req.body as UserInput);
+            res.status(201).json(user);            
         } catch (error) {
-            return res.status(500).json(error);
+            if (error instanceof ReferenceError)
+                res.status(400).json({message: "User already exists" });
+            res.status(500).json(error);
         }
     }
 
@@ -19,18 +24,18 @@ class userController {
             if (!user){
                 res.status(404).json({message: `User with id:${req.params.id} not found`})
             }
-            return res.json(user);   
+            res.json(user);   
         } catch (error) {
-            return res.status(500).json(error);
+            res.status(500).json(error);
         }
     }
 
     public async getAll(req: Request, res: Response) {
         try {
             const users: UserDocument[] = await userService.findAll(); 
-            return res.json(users);            
+            res.json(users);            
         } catch (error) {
-            return res.status(500).json(error);
+            res.status(500).json(error);
         }    
     }
 
@@ -40,9 +45,9 @@ class userController {
             if (!user){
                 res.status(404).json({message: `User with id:${req.params.id} not found`})
             }            
-            return res.json(user);            
+            res.json(user);            
         } catch (error) {
-            return res.status(500).json(error);
+            res.status(500).json(error);
         }
     }
 
@@ -52,10 +57,11 @@ class userController {
             if (!user){
                 res.status(404).json({message: `User with id:${req.params.id} not found`})
             }            
-            return res.json(user);          
+            res.json(user);          
         } catch (error) {
-            return res.status(500).json(error);
-        }    }
+            res.status(500).json(error);
+        }    
+    }
 }
 
 export default new userController();
