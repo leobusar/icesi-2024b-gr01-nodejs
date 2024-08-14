@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserDocument, UserInput } from "../models/user.model";
 import userService from "../services/user.service";
+import UserExistsError from "../exceptions/UserExistsError";
 
 class userController {
 
@@ -12,8 +13,10 @@ class userController {
             const user: UserDocument = await userService.create(req.body as UserInput);
             res.status(201).json(user);            
         } catch (error) {
-            if (error instanceof ReferenceError)
+            if (error instanceof UserExistsError){
                 res.status(400).json({message: "User already exists" });
+                return;
+            }
             res.status(500).json(error);
         }
     }
@@ -23,8 +26,10 @@ class userController {
             const resObj = await userService.login(req.body);
             res.status(200).json(resObj);
         } catch (error) {
-            if (error instanceof ReferenceError)
+            if (error instanceof ReferenceError){
                 res.status(401).json({message: "Not authorized" });
+                return;
+            }
             res.status(500).json(error);
         }
     }
@@ -33,7 +38,8 @@ class userController {
         try {
             const user: UserDocument | null = await userService.findById(req.params.id); 
             if (!user){
-                res.status(404).json({message: `User with id:${req.params.id} not found`})
+                res.status(404).json({message: `User with id:${req.params.id} not found`});
+                return;
             }
             res.json(user);   
         } catch (error) {
@@ -54,7 +60,8 @@ class userController {
         try {
             const user: UserDocument | null = await userService.update(req.params.id, req.body as UserInput);
             if (!user){
-                res.status(404).json({message: `User with id:${req.params.id} not found`})
+                res.status(404).json({message: `User with id:${req.params.id} not found`});
+                return;
             }            
             res.json(user);            
         } catch (error) {
@@ -67,6 +74,7 @@ class userController {
             const user: UserDocument | null = await userService.delete(req.params.id);
             if (!user){
                 res.status(404).json({message: `User with id:${req.params.id} not found`})
+                return;
             }            
             res.json(user);          
         } catch (error) {

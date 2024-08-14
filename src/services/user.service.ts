@@ -1,5 +1,7 @@
-import UserModel, {UserDocument, UserInput}  from "../models/user.model";
 import bcrypt from "bcrypt";
+import UserModel, {UserDocument, UserInput}  from "../models/user.model";
+import UserExistsError from "../exceptions/UserExistsError";
+
 
 class UserService {
 
@@ -7,7 +9,7 @@ class UserService {
         try {
             const userExists: UserDocument | null = await this.findByEmail(userInput.email);
             if(userExists)
-                 throw  new ReferenceError("User already exists");
+                 throw  new UserExistsError("User already exists");
 
             userInput.password = await bcrypt.hash(userInput.password, 10);
 
