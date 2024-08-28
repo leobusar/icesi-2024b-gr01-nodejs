@@ -3,6 +3,5 @@ export default class UserExistsError extends Error{
         super('');
         this.name = this.constructor.name;
         this.stack= message +" : "+ this.stack;
-
     }
 }
