@@ -29,7 +29,8 @@ class UserService {
             if(!isMatch)
                 throw  new ReferenceError("Not authorized");
             
-            return userExists;
+            const {_id:id, email, name} = userExists;
+            return {id, email, name};
         } catch (error) {
            throw error; 
         }
