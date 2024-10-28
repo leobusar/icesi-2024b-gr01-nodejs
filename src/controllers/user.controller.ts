@@ -10,7 +10,7 @@ class userController {
             // if(userExists)
             //      res.status(400).json({message: "User already exists" });
             const user: UserDocument = await userService.create(req.body as UserInput);
-            res.status(201).json(user);            
+            res.status(201).json(user);        
         } catch (error) {
             if (error instanceof ReferenceError)
                 res.status(400).json({message: "User already exists" });
